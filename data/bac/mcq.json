@@ -1,0 +1,59 @@
+{
+    "title": "Web Development Basics Quiz",
+    "description": "A short MCQ to test your knowledge of HTML, CSS, and JavaScript.",
+    "show_results": true,
+    "questions": [
+        {
+            "id": 1,
+            "type": "single_choice",
+            "question": "What does HTML stand for?",
+            "options": {
+                "a": "HyperText Markup Language",
+                "b": "HighText Machine Language",
+                "c": "HyperTool Multi Language",
+                "d": "Hyperlinks and Text Markup Language"
+            },
+            "correct_answers": ["a"],
+            "points": 2,
+            "images": [
+                "https://picsum.photos/200/300"
+            ]
+        },
+        {
+            "id": 2,
+            "type": "multiple_choice",
+            "question": "Which of the following are CSS properties?",
+            "options": {
+                "a": "color",
+                "b": "font-size",
+                "c": "onClick",
+                "d": "margin"
+            },
+            "correct_answers": ["a", "b", "d"],
+            "points": 3
+        },
+        {
+            "id": 3,
+            "type": "open",
+            "question": "Explain the difference between 'let', 'var', and 'const' in JavaScript.",
+            "placeholder": "Type your answer here...",
+            "points": 5,
+            "images": [
+                "https://picsum.photos/300"
+            ],
+            "answer": "In JavaScript, 'var' is function-scoped and can be redeclared, 'let' is block-scoped and cannot be redeclared in the same scope, and 'const' is also block-scoped but must be initialized at declaration and cannot be reassigned."
+        },
+        {
+            "id": 4,
+            "type": "single_choice",
+            "question": "Which tag is used to link a CSS file in HTML?",
+            "options": {
+                "a": "<style>",
+                "b": "<script>",
+                "c": "<link>",
+                "d": "<css>"
+            },
+            "correct_answers": ["c"]
+        }
+    ]
+}

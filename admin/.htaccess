@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Administration Open QCM"
+AuthUserFile /var/www/html/open-qcm/admin/.htpasswd
+Require valid-user
