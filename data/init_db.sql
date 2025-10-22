@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS answers (
     is_correct BOOLEAN DEFAULT 0,
     points_earned INTEGER DEFAULT 0,
     max_points INTEGER DEFAULT 0,
+    correction_needed BOOLEAN DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
 );

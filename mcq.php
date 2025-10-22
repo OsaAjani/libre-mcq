@@ -16,8 +16,8 @@
 
     $pdo = get_database_connection();
 
-    # Cancel old qcm sessions
-    $session_id = $_SESSION['qcm_session_id'] ?? false;
+    # Cancel old mcq sessions
+    $session_id = $_SESSION['mcq_session_id'] ?? false;
     if ($session_id)
     {
         cancel_mcq_session($session_id);
@@ -45,7 +45,7 @@
         $fullname,
     ]);
     
-    $_SESSION['qcm_session_id'] = $pdo->lastInsertId();
+    $_SESSION['mcq_session_id'] = $pdo->lastInsertId();
 
     include 'templates/mcq.php';
 ?>

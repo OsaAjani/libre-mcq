@@ -5,31 +5,44 @@ require_once 'incs/model.php';
 
 $fullname = trim($_SESSION['fullname'] ?? '');
 if (!$fullname) {
-    echo json_encode(['error' => 'Your fullname is required.']);
+    flash('error', 'Failed to sumbit answers. Your fullname is required');
+    header('Location: index.php');
     exit;
 }
 
-$session_id = $_SESSION['qcm_session_id'] ?? false;
+$session_id = $_SESSION['mcq_session_id'] ?? false;
 if (!$session_id) {
-    echo json_encode(['error' => "We have no open session for this QCM"]);
+    flash('error', 'Failed to sumbit answers. We have no open session for this MCQ');
+    header('Location: index.php');
     exit;
 }
 
 if (!session_exists($session_id)) {
-    echo json_encode(['error' => "We cannot find your QCM session, please try again"]);
+    flash('error', 'Failed to sumbit answers. We cannot find your MCQ session, please try again');
+    header('Location: index.php');
+    exit;
 }
 
 $mcq_id = $_POST['mcq_id'] ?? false;
 if (!$mcq_id)
 {
-    echo json_encode(['error' => 'ID du MCQ manquant']);
+    flash('error', 'Failed to sumbit answers. MCQ ID is missing');
+    header('Location: index.php');
     exit;
 }
 
 $mcq_data = read_mcq_data(__DIR__ . '/data/' . $mcq_id);
 if (!$mcq_data) 
 {
-    echo json_encode(['error' => 'MCQ non trouvé']);
+    flash('error', 'Failed to sumbit answers. Cannot found info on this MCQ.');
+    header('Location: index.php');
+    exit;
+}
+
+if ($mcq_data['status'] != 'open')
+{
+    flash('error', 'Failed to sumbit answers. This MCQ is not open anymore.');
+    header('Location: index.php');
     exit;
 }
 
@@ -87,16 +100,20 @@ $remaining_points = $total_score - $total_automatic_score;
 $percentage = $total_score > 0 ? ($score / $total_score) * 100 : 0;
 
 try {
-    // Update qcm session info
+    // Update mcq session info
     update_mcq_session($session_id, $score, $total_score, $percentage);
 
     // Insert individual answers
     save_mcq_answers($session_id, $mcq_data);
 
     // MCQ is ended, we can remove session id from session
-    unset($_SESSION['qcm_session_id']);
+    unset($_SESSION['mcq_session_id']);
 } catch (Exception $e) {
-    throw new Exception('Error saving results : ' . $e->getMessage());
+    error_log('Error saving results for session #' . $session_id .  ' : ' . $e->getMessage());
+    
+    flash('error', 'Failed to save results in database, contact the admin.');
+    header('Location: index.php');
+    exit;
 }
 
 

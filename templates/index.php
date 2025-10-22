@@ -12,9 +12,11 @@
                     <header>
                         <h2 class="mb-0"><?php echo htmlspecialchars($mcq['title']); ?></h2>
                     </header>
-                    <p><?php echo htmlspecialchars($mcq['description']); ?></p>
+                    <main>
+                        <p><?php echo htmlspecialchars($mcq['description']); ?></p>
+                    </main>
                     <footer>
-                        <a class="contrast" role="button" href="mcq.php?id=<?php echo urlencode($mcq['id']); ?>">Take this Quiz</a>
+                        <a role="button" href="mcq.php?id=<?php echo urlencode($mcq['id']); ?>">Take this Quiz</a>
                     </footer>
                 </article>
             <?php endforeach; ?>

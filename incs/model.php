@@ -128,9 +128,9 @@ function get_mcq_statistics($mcq_id) {
 }
 
 /**
- * Close in progress QCM sessions
+ * Close in progress MCQ sessions
  * 
- * @param int $session_id ID of QCM session to close
+ * @param int $session_id ID of MCQ session to close
  */
 function cancel_mcq_session($session_id) {
     try {
@@ -182,7 +182,7 @@ function update_mcq_session($session_id, $score, $total_score, $percentage) {
 }
 
 /**
- * Save answers for a QCM
+ * Save answers for a MCQ
  */
 function save_mcq_answers($session_id, $mcq_data) {
     try {
@@ -190,8 +190,8 @@ function save_mcq_answers($session_id, $mcq_data) {
 
         // Insérer les réponses individuelles
         $stmt_answer = $pdo->prepare("
-            INSERT INTO answers (session_id, question_id, question_type, student_answer, correct_answer, is_correct, points_earned, max_points) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO answers (session_id, question_id, question_type, student_answer, correct_answer, is_correct, points_earned, max_points, correction_needed) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         
         foreach ($mcq_data['questions'] as $question) {
@@ -206,6 +206,7 @@ function save_mcq_answers($session_id, $mcq_data) {
             $question_type = $question['type'] ?? 'single_choice';
             $max_points = $question['points'] ?? 1;
             $points_earned = ($is_correct === true) ? $max_points : 0;
+            $correction_needed = boolval($question['correction_needed'] ?? false);
             
             // Convertir en JSON pour le stockage
             $student_answer_json = json_encode($student_answer);
@@ -219,10 +220,69 @@ function save_mcq_answers($session_id, $mcq_data) {
                 $correct_answer_json,
                 $is_correct,
                 $points_earned,
-                $max_points
+                $max_points,
+                $correction_needed,
             ]);
         }
     } catch (PDOException $e) {
         throw new Exception("Error while trying to save answers for session #$session_id");
+    }
+}
+
+/**
+ * Get an answer exists by his id
+ */
+function get_answer_by_id($answer_id) {
+    try {
+        $pdo = get_database_connection();
+
+        // Récupérer les informations de la réponse
+        $stmt = $pdo->prepare("SELECT * FROM answers WHERE id = ?");
+        $stmt->execute([$answer_id]);
+        return $stmt->fetch();
+    } catch (PDOException $e) {
+        throw new Exception("Error while trying to get answer #$answer_id : " . $e->getMessage());
+    }
+}
+
+
+/**
+ * Update answer correctness by id
+ */
+function update_answer_correctness($answer_id, $is_correct) {
+    try {
+        $pdo = get_database_connection();
+
+        $sql = "
+            UPDATE answers
+            SET is_correct = ?, correction_needed = 0
+            WHERE id = ?
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$is_correct, $answer_id]);
+
+        if ($is_correct) {
+            $sql = "
+                UPDATE answers
+                SET points_earned = max_points
+                WHERE id = ?
+            ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$answer_id]);
+
+            $sql = "
+                UPDATE sessions
+                SET total_score = total_score + (SELECT points_earned FROM answers WHERE id = :answer_id)
+                , percentage = ((total_score + (SELECT points_earned FROM answers WHERE id = :answer_id)) * 100.0) / max_score
+                WHERE id = (SELECT session_id FROM answers WHERE id = :answer_id)
+            ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['answer_id' => $answer_id]);
+        }
+
+        
+    } catch (PDOException $e) {
+        throw new Exception("Error while trying to update answer #$answer_id correctness : " . $e->getMessage());
     }
 }

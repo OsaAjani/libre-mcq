@@ -11,7 +11,7 @@ if (empty($mcq_id) || !in_array($action, ['open', 'close'])) {
     exit;
 }
 
-// Vérifier que le QCM existe
+// Vérifier que le MCQ existe
 $mcq_path = "../data/" . $mcq_id;
 if (!is_dir($mcq_path)) {
     flash('error', 'Cannot found this MCQ.');
@@ -32,10 +32,9 @@ if ($success === false) {
 
 
 // Message de confirmation
-$message = ($action === 'open') ? 'QCM ouvert avec succès' : 'QCM fermé avec succès';
+$message = ($action === 'open') ? 'MCQ ouvert avec succès' : 'MCQ fermé avec succès';
 
 // Rediriger avec message
 flash('success', $message);
 header('Location: index.php');
 exit;
-?>

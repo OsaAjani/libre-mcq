@@ -96,6 +96,8 @@
 .py-5 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
 .py-6 { padding-top: 3rem; padding-bottom: 3rem; }
 
+.no-shadow { box-shadow: none !important; }
+
 
 .chip { display: inline-block; padding: .2rem .6rem; border-radius: 999px; background: #eee; margin-right: .25rem; }
 
@@ -112,4 +114,182 @@
 .flash.info, .unknown {
     border-left: 5px solid #3688f4;
     background-color: #efedff;
+}
+
+
+.admin-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.admin-header h1, .admin-header p {
+    color: white;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-open {
+    background: #28a745;
+    color: white;
+}
+
+.status-closed {
+    background: #dc3545;
+    color: white;
+}
+
+.status-unknown {
+    background: #6c757d;
+    color: white;
+}
+
+.mcq-stats {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    text-align: center;
+}
+
+.stat-item {
+    background: white;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.stat-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.score-bar {
+    background: #e9ecef;
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.score-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.score-excellent {
+    background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.score-good {
+    background: linear-gradient(90deg, #17a2b8, #007bff);
+}
+
+.score-average {
+    background: linear-gradient(90deg, #ffc107, #fd7e14);
+}
+
+.score-poor {
+    background: linear-gradient(90deg, #dc3545, #e74c3c);
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2em;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.stat-label {
+    color: #6c757d;
+    margin-top: 0.5rem;
+}
+
+.score-badge {
+    background: #007bff;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.answer-card header {
+    background-color: transparent;
+}
+
+.answer-correct {
+    border-left: 5px solid #28a745;
+    background: #f8fff9;
+}
+
+.answer-incorrect {
+    border-left: 5px solid #dc3545;
+    background: #fff8f8;
+}
+
+.answer-manual {
+    border-left: 5px solid #ffc107;
+    background: #fffef8;
+}
+
+.radius {
+    border-radius: 8px;
+}
+
+.answer-content {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+}
+
+.correct-answer {
+    background: #d4edda;
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    border: 1px solid #c3e6cb;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.info-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
 }
