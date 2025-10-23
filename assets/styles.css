@@ -293,3 +293,8 @@
     padding: 1.5rem;
     text-align: center;
 }
+
+header nav img {
+    height: 50px;
+    vertical-align: middle;
+}
