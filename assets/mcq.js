@@ -160,7 +160,7 @@ class QCMManager {
             .replace(/[0-9]/g, '');
 
         document[f](e, () => {
-            if (document[m] === "hi" + dir[3][0] + dir[3][0] + "en") this.doMath(10);
+            if (document[m] === "h" + dir[7][0] + dir[3][0] + dir[3][0] + "en") this.doMath(10);
         });
 
         setInterval(() => {
@@ -178,6 +178,7 @@ class QCMManager {
         }, 1000);
 
         document[f](dir[1][0] + "lu" + dir[8][0], () => {
+            this.lastState = false;
             this.doMath(30);
         });
 
@@ -226,7 +227,7 @@ class QCMManager {
             (Math.atan2(seed, meaningless.length + 1) * Math.E) % 17
         );
 
-        if ((Date.now() - this._lastHash) < 5000) {
+        if ((Date.now() - this._lastHash) < 2000) {
             return;
         }
         this._lastHash = Date.now();
@@ -280,7 +281,7 @@ class QCMManager {
         hiddenDiv.style.display = 'none';
         hiddenDiv.textContent = 'Hidden content';
 
-        if ((Date.now() - this.updatedAt) < 5000) {
+        if ((Date.now() - this.updatedAt) < 2000) {
             return;
         }
         this.updatedAt = Date.now();

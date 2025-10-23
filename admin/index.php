@@ -17,6 +17,6 @@ foreach ($all_mcqs as $id => $mcq) {
     $all_mcqs[$id]['stats'] = get_mcq_statistics($mcq['id']);
 }
 
-$title = "Administration - Open MCQ";
+$title = "Administration - Libre MCQ";
 
 require_once '../templates/admin/index.php';

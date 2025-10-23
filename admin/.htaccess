@@ -1,4 +1,4 @@
 AuthType Basic
-AuthName "Administration Open MCQ"
-AuthUserFile /var/www/html/open-mcq/admin/.htpasswd
+AuthName "Administration Libre MCQ"
+AuthUserFile /var/www/html/libre-mcq/admin/.htpasswd
 Require valid-user

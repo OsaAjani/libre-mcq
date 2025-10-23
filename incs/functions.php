@@ -57,6 +57,11 @@
             $result['status'] = trim(file_get_contents($mcq_dir . DIRECTORY_SEPARATOR . 'status.txt'));
         }
 
+        if (file_exists($mcq_dir . DIRECTORY_SEPARATOR . 'ai_protect.txt')) 
+        {
+            $result['ai_protect'] = filter_var(trim(file_get_contents($mcq_dir . DIRECTORY_SEPARATOR . 'ai_protect.txt')), FILTER_VALIDATE_BOOLEAN);
+        }
+
         $result['id'] = basename($mcq_dir);
 
         return $result;
@@ -72,7 +77,7 @@
 
     function get_flashes()
     {
-        $flashes = $_SESSION['flashes'];
+        $flashes = $_SESSION['flashes'] ?? [];
         $_SESSION['flashes'] = [];
         return $flashes;
     }

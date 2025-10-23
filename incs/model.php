@@ -286,3 +286,22 @@ function update_answer_correctness($answer_id, $is_correct) {
         throw new Exception("Error while trying to update answer #$answer_id correctness : " . $e->getMessage());
     }
 }
+
+
+function insert_warning($session_id, $warning_type) {
+    try {
+        $pdo = get_database_connection();
+
+        $stmt = $pdo->prepare("
+            INSERT INTO warnings (session_id, warning_type, created_at) 
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+        ");
+
+        $stmt->execute([
+            $session_id,
+            $warning_type,
+        ]);
+    } catch (PDOException $e) {
+        throw new Exception("Error while trying to insert warning for session #$session_id : " . $e->getMessage());
+    }
+}

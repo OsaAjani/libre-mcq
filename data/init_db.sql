@@ -1,4 +1,4 @@
--- Schéma de base de données pour Open MCQ
+-- Schéma de base de données pour Libre MCQ
 -- Base SQLite pour stocker les réponses et résultats des MCQ
 
 -- Table pour stocker les sessions de MCQ
@@ -30,8 +30,17 @@ CREATE TABLE IF NOT EXISTS answers (
     FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS warnings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER NOT NULL,
+    warning_type VARCHAR(50) NOT NULL, -- 'tab_switch', etc.
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
+);
+
 -- Index pour améliorer les performances
 CREATE INDEX IF NOT EXISTS idx_sessions_mcq_id ON sessions(mcq_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_student ON sessions(student_name);
 CREATE INDEX IF NOT EXISTS idx_answers_session ON answers(session_id);
 CREATE INDEX IF NOT EXISTS idx_answers_question ON answers(question_id);
+CREATE INDEX IF NOT EXISTS idx_warnings_session ON warnings(session_id);
