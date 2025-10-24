@@ -77,10 +77,6 @@ chmod 660 data/database.sqlite
 htpasswd -c admin/.htpasswd admin
 ```
 
-6. **Accéder à l'application**
-
-Ouvrez votre navigateur et allez à `http://votre-domaine.local`
-
 
 ## 📝 Création d'un questionnaire
 
