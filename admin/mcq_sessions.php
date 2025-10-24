@@ -28,4 +28,6 @@ try {
     // Base de données peut ne pas exister
 }
 
+$title = 'Admin Sessions - Libre MCQ';
+
 require_once '../templates/admin/mcq_sessions.php';

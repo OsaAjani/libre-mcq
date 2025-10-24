@@ -21,7 +21,20 @@
                 </div>
             </div>
         </section>
-        
+
+        <?php if ($session['warning_count'] > 0): ?>
+            <section class="mb-4 px-4 py-4 radius pico-background-red-100">
+                <h2>⚠️ Avertissements</h2>
+                <p>
+                    Cette session a généré <strong><?= $session['warning_count'] ?></strong> avertissement(s) pour des comportements suspects pendant le test.
+                    Veuillez consulter la section des avertissements pour plus de détails.
+                </p>
+                <a href="warnings.php" role="button" class="outline">
+                    Voir les avertissements
+                </a>
+            </section>
+        <?php endif; ?>
+
         <div class="info-grid">
             <div class="info-card">
                 <h3>👤 Étudiant</h3>
@@ -165,8 +178,8 @@
                                 <?php endif; ?>
                                 <?php if ($answer['correction_needed']): ?>
                                     <section>
-                                        <a role="button" class="secondary" href="./correct_answer.php?answer_id=<?= htmlspecialchars($answer['id']) ?>&is_correct=0">Refuser la réponse</a>
-                                        <a role="button" class="primary" href="./correct_answer.php?answer_id=<?= htmlspecialchars($answer['id']) ?>&is_correct=1">Accepter la réponse</a>
+                                        <a role="button" class="secondary" href="./correct_answer.php?answer_id=<?= urlencode($answer['id']) ?>&csrf=<?= urlencode(csrf_token()) ?>&is_correct=0">Refuser la réponse</a>
+                                        <a role="button" class="primary" href="./correct_answer.php?answer_id=<?= urlencode($answer['id']) ?>&csrf=<?= urlencode(csrf_token()) ?>&is_correct=1">Accepter la réponse</a>
                                     </section>
                                 <?php endif; ?>
                             </div>

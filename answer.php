@@ -3,6 +3,8 @@ session_start();
 require_once 'incs/functions.php';
 require_once 'incs/model.php';
 
+check_csrf_token();
+
 $fullname = trim($_SESSION['fullname'] ?? '');
 if (!$fullname) {
     flash('error', 'Failed to sumbit answers. Your fullname is required');

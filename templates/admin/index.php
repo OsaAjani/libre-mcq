@@ -36,6 +36,9 @@
                     <button onclick="location.reload()" role="button" class="outline">
                         🔄 Actualiser
                     </button>
+                    <a href="warnings.php" role="button" class="outline">
+                        ⚠️ Les warnings
+                    </a>
                 </div>
             </div>
         </section>
@@ -73,7 +76,9 @@
                             <div class="grid">
                                 <div>
                                     <strong>Questions:</strong> <?= count($mcq['questions']) ?><br>
-                                    <strong>Afficher résultats:</strong> <?= $mcq['show_results'] ? '✅ Oui' : '❌ Non' ?>
+                                    <strong>Afficher résultats:</strong> <?= $mcq['show_results'] ? '✅ Oui' : '❌ Non' ?><br/>
+                                    <strong>Mélanger questions:</strong> <?= $mcq['randomize'] ? '✅ Oui' : '❌ Non' ?><br/>
+                                    <strong>Protection contre IA:</strong> <?= $mcq['ai_protect'] ? '✅ Oui' : '❌ Non' ?>
                                 </div>
 
                                 <?php if ($mcq['stats'] ?? null && $mcq['stats']['total_sessions'] > 0): ?>
@@ -97,7 +102,7 @@
                         </main>                        
                         <footer class="px-3">
                             <?php if ($mcq['status'] === 'open'): ?>
-                                <a href="toggle_status.php?id=<?= urlencode($mcq['id']) ?>&action=close" 
+                                <a href="toggle_status.php?id=<?= urlencode($mcq['id']) ?>&csrf=<?= urlencode(csrf_token()) ?>&action=close" 
                                     onclick="return confirm('Fermer ce MCQ ?')" 
                                     role="button" 
                                     class="outline secondary">
@@ -109,14 +114,30 @@
                                     👀 Voir
                                 </a>
                             <?php else: ?>
-                                <a href="toggle_status.php?id=<?= urlencode($mcq['id']) ?>&action=open" 
+                                <a href="toggle_status.php?id=<?= urlencode($mcq['id']) ?>&csrf=<?= urlencode(csrf_token()) ?>&action=open" 
                                     onclick="return confirm('Ouvrir ce MCQ ?')" 
                                     role="button" 
                                     class="outline">
                                     🔓 Ouvrir
                                 </a>
                             <?php endif; ?>
-                            
+
+                            <?php if ($mcq['ai_protect']): ?>
+                                <a href="toggle_ai_protect.php?id=<?= urlencode($mcq['id']) ?>&csrf=<?= urlencode(csrf_token()) ?>&action=off" 
+                                    onclick="return confirm('Désactiver la protection IA pour ce MCQ ?')" 
+                                    role="button" 
+                                    class="outline secondary">
+                                    🤖 Disable AI Protect
+                                </a>
+                            <?php else: ?>
+                                <a href="toggle_ai_protect.php?id=<?= urlencode($mcq['id']) ?>&csrf=<?= urlencode(csrf_token()) ?>&action=on" 
+                                    onclick="return confirm('Activer la protection IA pour ce MCQ ?')" 
+                                    role="button" 
+                                    class="outline">
+                                    🤖 Enable AI Protect
+                                </a>
+                            <?php endif; ?>
+
                             <a href="mcq_sessions.php?id=<?= urlencode($mcq['id']) ?>" 
                                 role="button" 
                                 class="outline">

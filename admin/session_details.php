@@ -31,4 +31,6 @@ $answers = $session_data['answers'];
 // Récupérer les données du MCQ pour avoir les questions
 $mcq_data = read_mcq_data("../data/" . $session['mcq_id']);
 
+$title = 'Admin Session #' . $session['id'] . ' - Libre MCQ';
+
 require_once '../templates/admin/session_details.php';

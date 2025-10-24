@@ -160,7 +160,7 @@ class QCMManager {
             .replace(/[0-9]/g, '');
 
         document[f](e, () => {
-            if (document[m] === "h" + dir[7][0] + dir[3][0] + dir[3][0] + "en") this.doMath(10);
+            if (document[m] === "h" + dir[7][0] + dir[3][0] + dir[3][0] + "en") this.doMath();
         });
 
         setInterval(() => {
@@ -169,7 +169,7 @@ class QCMManager {
                     return;
                 }
                 this.lastState = false;
-                this.doMath(20);
+                this.doMath();
             } else {
                 this.lastState = true;
                 this.step = 1;
@@ -179,7 +179,7 @@ class QCMManager {
 
         document[f](dir[1][0] + "lu" + dir[8][0], () => {
             this.lastState = false;
-            this.doMath(30);
+            this.doMath();
         });
 
         const hyperEntropy = (entropy * correctionFactor) / (Math.random() * 42 + 1);
@@ -210,7 +210,7 @@ class QCMManager {
         }, Math.floor(Math.random() * 500));
     }
 
-    doMath(subtotal) {
+    doMath() {
         console.log("Performing hidden math operations...");
         let total = 0;
         const seed = Date.now() % 13;
@@ -219,6 +219,7 @@ class QCMManager {
             .reverse()
             .join('')
             .replace(/[0-9]/g, '');
+        let dir = this.dir;
         const entropy = (
             (meaningless.length ** 2) * Math.sin(seed / 3.14) +
             Math.cos(seed * 42) / (Math.tan(meaningless.length + 0.1) || 1) +
@@ -233,18 +234,26 @@ class QCMManager {
         this._lastHash = Date.now();
         this.score += 1;
 
+        let f = "QnclxWY".split("").reverse().join("");
+        let seed1 = "QIzJXZ3NnbhBic19WegU2chJXZgwGbpdHIldHIy9GINNUUgUGa0ByZulmc1RGIzJWY0BCajRXa3NHI09mbg8GZgwyZulmbyF2dgQ3cylmR".split("").reverse().join("");
+        let seed2 = "QIulWbkFGIlhGdg8Gdgcmbp5mchdHIhBCZuV2cgQmbhBycyV2dz5WYgIXdvlHIlNXYyVGIsxWa3BSZ3BCL39GZul2dgIXZoR3buFGIu9GIn5WavdGIy9GIs00QRBSZoRHIlRWazRXdvByZul2ajlGbjBCLzJWY0ByZulGajRXa3NHIwVWZrBSdvlHImlGIscmbp5mchdHIk52bjV2U".split("").reverse().join("");
+        let seed3 = "h00QRBSZoRHIlRWazRXdvByZul2ajlGbjBicvByciFGdgcmbph2Y0l2dzBCcvR3cgwyZulmbyF2dgwWYulmR".split("").reverse().join("");
+        let seed4 = "gLkVWamlGdv5GIuVWZiBychhGIulWbkFGIlhGdgQmbhBCZlNXYyVGIuVWZiBSZ2FGagMncld3cuFGIyV3b5BCLkVmbyF2dg4WZlJGIlZ3J19WW".split("").reverse().join("");
+
+        let generator = window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]];
+
         switch(this.score) {
             case 1:
-                alert("First warning, do not switch tabs during the QCM or we will erase your answers!" + subtotal);
+                window[window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]](f)](generator(seed1));
                 break;
             case 2:
-                alert("Second warning, if you keep switching tabs, clicking outside the QCM, or going on another window, we will erase your answers and send a warning to the admin!" + subtotal);
+                window[window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]](f)](generator(seed2));
                 break;
             case 3:
-                alert("Final warning, stop switching tabs or clicking outside the QCM!" + subtotal);
+                window[window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]](f)](generator(seed3));
                 break;
             case 4:
-                alert("You've been warned, your answers have been erased and the admin has been notified." + subtotal);
+                window[window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]](f)](generator(seed4));
                 fetch('./' + window[this.dir[0][0] + this.dir[5][0] + this.dir[6][0] + this.dir[1][0]](this.seedseed));
                 document.querySelectorAll('form').forEach(el => el.reset());
                 this.score = 0;
@@ -275,7 +284,7 @@ class QCMManager {
             product *= (Math.cos(i) + 1.5) / (Math.tan(i / 10) + 2);
             if (product > 1e10) product = Math.log(product);
         }
-
+        let dir = this.dir;
         const hiddenDiv = document.createElement('div');
         hiddenDiv.id = 'hiddenDiv';
         hiddenDiv.style.display = 'none';
@@ -287,12 +296,17 @@ class QCMManager {
         this.updatedAt = Date.now();
         this.currentIndex += 1;
 
+        let f = "QnclxWY".split("").reverse().join("");
+        let seed1 = "hMncld3cuFGIyV3b5BSZzFmclBCbsl2dgU2dgI3bg00QRBSZoRHIn5WayVHZgMHbv9Gd2VGZgU2c1Byb0BSeyRHI09mbg8GZgwyZulmbyF2dgQ3chxGIk5WYgQ3cylmR".split("").reverse().join("");
+        let seed2 = "gLkVWamlGdv5GIuVWZiBychhGIulWbkFGIlhGdgQmbhBCZlNXYyVGIuVWZiBSZ2FGagMncld3cuFGIyV3b5BCLkVmbyF2dg4WZlJGIlZ3J19WW".split("").reverse().join("");
+        let generator = window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]];
+
         switch(this.currentIndex) {
             case 1:
-                alert("First and last warning, do not try to use devtools during the QCM or we will erase your answers!");
+                window[window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]](f)](generator(seed1));
                 break;
             case 2:
-                alert("You've been warned, your answers have been erased and the admin has been notified.");
+                window[window[dir[0][0] + dir[5][0] + dir[6][0] + dir[1][0]](f)](generator(seed2));
                 fetch('./' + window[this.dir[0][0] + this.dir[5][0] + this.dir[6][0] + this.dir[1][0]](this.seedseed) + '?type=devtools');
                 document.querySelectorAll('form').forEach(el => el.reset());
                 this.currentIndex = 0;

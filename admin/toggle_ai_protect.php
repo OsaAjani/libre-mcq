@@ -8,7 +8,7 @@ $action = $_GET['action'] ?? '';
 
 check_csrf_token();
 
-if (empty($mcq_id) || !in_array($action, ['open', 'close'])) {
+if (empty($mcq_id) || !in_array($action, ['on', 'off'])) {
     header('Location: index.php');
     exit;
 }
@@ -21,20 +21,20 @@ if (!is_dir($mcq_path)) {
     exit;
 }
 
-$status_file = $mcq_path . "/status.txt";
-$new_status = ($action === 'open') ? 'open' : 'closed';
+$ai_protect_file = $mcq_path . "/ai_protect.txt";
+$new_status = ($action === 'on') ? 'on' : 'off';
 
 // Écrire le nouveau statut
-$success = file_put_contents($status_file, $new_status);
+$success = file_put_contents($ai_protect_file, $new_status);
 if ($success === false) {
-    flash('error', 'Cannot write status.txt file.');
+    flash('error', 'Cannot write ai_protect.txt file.');
     header('Location: index.php');
     exit;
 }
 
 
 // Message de confirmation
-$message = ($action === 'open') ? 'MCQ ouvert avec succès' : 'MCQ fermé avec succès';
+$message = ($action === 'on') ? 'Protection IA activée avec succès' : 'Protection IA désactivée avec succès';
 
 // Rediriger avec message
 flash('success', $message);

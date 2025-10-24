@@ -1,0 +1,28 @@
+############################################
+# .htaccess — Rewrite version (Apache 2.2+)
+# Allow only /, /admin and /assets
+############################################
+
+Options -Indexes
+RewriteEngine On
+
+# --- Allow homepage ---
+RewriteRule ^$ - [L]
+
+# --- Allow PHP files in document root only (no slashes) ---
+RewriteRule ^[^/]+\.php$ - [L]
+
+# --- Allow anything under /assets/ (files and folders) ---
+RewriteRule ^assets(/|$) - [L]
+
+# --- Allow PHP files directly in /admin/ (no subdirectories) ---
+RewriteRule ^admin/[^/]+\.php$ - [L]
+
+# --- Allow /admin/ (no subdirectories) ---
+RewriteRule ^admin[/]?$ - [L]
+
+# --- Hide dotfiles (.env, .git, .ht*) ---
+RewriteRule ^\. - [F,L]
+
+# --- Deny everything else ---
+RewriteRule ^ - [F,L]

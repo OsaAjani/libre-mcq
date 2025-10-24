@@ -1,5 +1,27 @@
 <?php
 
+    function csrf_token() 
+    {
+        $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(32));
+        return $_SESSION['csrf_token'];
+    }
+    
+    // Always generate a CSRF token
+    csrf_token();
+
+    function check_csrf_token() 
+    {
+        $session_token = $_SESSION['csrf_token'] ?? false;
+        $token = $_POST['csrf'] ?? $_GET['csrf'] ?? false;
+
+        if (!$session_token || !$token) 
+        {
+            throw new Exception('CSRF token missing');
+        }
+
+        return hash_equals($session_token, $token);
+    }
+
     /**
      * Get a list of MCQs from the data directory.
      * 

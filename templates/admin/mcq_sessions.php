@@ -56,6 +56,7 @@
                                 <th>📅 Date</th>
                                 <th>⏱️ Durée</th>
                                 <th>🎯 Score</th>
+                                <th>⚠️ Warnings</th>
                                 <th>📊 Pourcentage</th>
                                 <th>⚙️ Actions</th>
                             </tr>
@@ -85,6 +86,14 @@
                                     </td>
                                     <td>
                                         <strong><?= $session['total_score'] ?>/<?= $session['max_score'] ?></strong>
+                                    </td>
+                                    <td>
+                                        <?php if ($session['warning_count'] == 0) : ?>
+                                            Aucun
+                                        <?php else : ?>
+                                            <strong><?= $session['warning_count'] ?></strong>
+                                        <?php endif; ?>
+                                        
                                     </td>
                                     <td>
                                         <div class="score-bar">

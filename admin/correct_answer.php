@@ -4,6 +4,8 @@ session_start();
 require_once '../incs/functions.php';
 require_once '../incs/model.php';
 
+check_csrf_token();
+
 $answer_id = $_GET['answer_id'] ?? false;
 $is_correct = $_GET['is_correct'] ?? null;
 
@@ -23,7 +25,7 @@ $session_id = $answer['session_id'] ?? null;
 update_answer_correctness($answer_id, $is_correct);
 
 
-$message = ($is_correct === true) ? 'Réponse marquée comme correcte' : 'Réponse marquée comme incorrecte';
+$message = $is_correct ? 'Réponse marquée comme correcte' : 'Réponse marquée comme incorrecte';
 flash('success', $message);
 
 // Redirect to session page and specific answer

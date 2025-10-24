@@ -1,5 +1,6 @@
 <?php
 
+
 /**
 * Obtient une connexion PDO à la base de données SQLite
 * 
@@ -9,6 +10,11 @@
 function get_database_connection($db_path = null) {
     if ($db_path === null) {
         $db_path = __DIR__ . '/../data/database.sqlite';
+    }
+
+    global $pdo;
+    if ($pdo instanceof PDO) {
+        return $pdo;
     }
     
     try {
@@ -21,16 +27,12 @@ function get_database_connection($db_path = null) {
     }
 }
 
-/**
- * Check if a session exists by his id
- */
 function session_exists($session_id) {
     try {
         $pdo = get_database_connection();
         
-        // Récupérer les informations de la session
-        $stmt = $pdo->prepare("SELECT * FROM sessions WHERE id = ?");
-        $stmt->execute([$session_id]);
+        $stmt = $pdo->prepare("SELECT * FROM sessions WHERE id = :session_id");
+        $stmt->execute(['session_id' => $session_id]);
         $session = $stmt->fetch();
         
         return (bool) $session;
@@ -40,28 +42,25 @@ function session_exists($session_id) {
     }
 }
 
-/**
-* Récupère les résultats d'une session par son ID
-* 
-* @param int $session_id ID de la session
-* @return array|null
-*/
 function get_session_results($session_id) {
     try {
         $pdo = get_database_connection();
         
-        // Récupérer les informations de la session
-        $stmt = $pdo->prepare("SELECT * FROM sessions WHERE id = ?");
-        $stmt->execute([$session_id]);
+        $stmt = $pdo->prepare("
+            SELECT sessions.*, COUNT(warnings.id) as warning_count
+            FROM sessions 
+            LEFT JOIN warnings ON warnings.session_id = sessions.id
+            WHERE sessions.id = :session_id
+        ");
+        $stmt->execute(['session_id' => $session_id]);
         $session = $stmt->fetch();
         
         if (!$session) {
             return null;
         }
         
-        // Récupérer les réponses de la session
-        $stmt = $pdo->prepare("SELECT * FROM answers WHERE session_id = ? ORDER BY question_id");
-        $stmt->execute([$session_id]);
+        $stmt = $pdo->prepare("SELECT * FROM answers WHERE session_id = :session_id ORDER BY question_id");
+        $stmt->execute(['session_id' => $session_id]);
         $answers = $stmt->fetchAll();
         
         return [
@@ -74,23 +73,19 @@ function get_session_results($session_id) {
     }
 }
 
-/**
-* Récupère toutes les sessions pour un MCQ donné
-* 
-* @param string $mcq_id ID du MCQ
-* @return array
-*/
 function get_mcq_sessions($mcq_id) {
     try {
         $pdo = get_database_connection();
         $stmt = $pdo->prepare("
-                SELECT id, student_name, start_time, end_time, total_score, max_score, percentage, status 
-                FROM sessions 
-                WHERE mcq_id = ? 
+                SELECT sessions.*, COUNT(w.id) as warning_count
+                FROM sessions
+                LEFT JOIN warnings w ON w.session_id = sessions.id
+                WHERE sessions.mcq_id = :mcq_id
                 AND status = 'completed'
-                ORDER BY end_time DESC
+                GROUP BY sessions.id
+                ORDER BY sessions.end_time DESC
             ");
-        $stmt->execute([$mcq_id]);
+        $stmt->execute(['mcq_id' => $mcq_id]);
         return $stmt->fetchAll();
         
     } catch (PDOException $e) {
@@ -98,12 +93,6 @@ function get_mcq_sessions($mcq_id) {
     }
 }
 
-/**
-* Récupère les statistiques globales d'un MCQ
-* 
-* @param string $mcq_id ID du MCQ
-* @return array
-*/
 function get_mcq_statistics($mcq_id) {
     try {
         $pdo = get_database_connection();
@@ -117,9 +106,9 @@ function get_mcq_statistics($mcq_id) {
                     MIN(total_score) as min_score,
                     MAX(total_score) as max_score
                 FROM sessions 
-                WHERE mcq_id = ? AND status = 'completed'
+                WHERE mcq_id = :mcq_id AND status = 'completed'
             ");
-        $stmt->execute([$mcq_id]);
+        $stmt->execute(['mcq_id' => $mcq_id]);
         return $stmt->fetch();
         
     } catch (PDOException $e) {
@@ -127,11 +116,6 @@ function get_mcq_statistics($mcq_id) {
     }
 }
 
-/**
- * Close in progress MCQ sessions
- * 
- * @param int $session_id ID of MCQ session to close
- */
 function cancel_mcq_session($session_id) {
     try {
         $pdo = get_database_connection();
@@ -143,34 +127,28 @@ function cancel_mcq_session($session_id) {
             AND status = 'in_progress'
         ");
 
-        $stmt->execute([
-            'id' => $session_id,
-        ]);
+        $stmt->execute(['id' => $session_id]);
     } catch (PDOException $e) {
         throw new Exception("Error while trying to cancel session #$session_id");
     }
 }
 
-/**
- * Update mcq session to store score etc.
- */
 function update_mcq_session($session_id, $score, $total_score, $percentage) {
     try {
         $pdo = get_database_connection();
 
         $stmt = $pdo->prepare("
             UPDATE sessions 
-            SET end_time = CURRENT_TIMESTAMP, total_score = ?, max_score = ?, percentage = ?, status = 'completed'
-            WHERE id = ?
+            SET end_time = CURRENT_TIMESTAMP, total_score = :score, max_score = :total_score, percentage = :percentage, status = 'completed'
+            WHERE id = :session_id
             AND status = 'in_progress'
         ");
         
         $stmt->execute([
-            $score,
-            $total_score,
-            $percentage,
-
-            $session_id,
+            'score' => $score,
+            'total_score' => $total_score,
+            'percentage' => $percentage,
+            'session_id' => $session_id,
         ]);
         
         if ($stmt->rowCount() <= 0) {
@@ -181,17 +159,13 @@ function update_mcq_session($session_id, $score, $total_score, $percentage) {
     }
 }
 
-/**
- * Save answers for a MCQ
- */
 function save_mcq_answers($session_id, $mcq_data) {
     try {
         $pdo = get_database_connection();
 
-        // Insérer les réponses individuelles
         $stmt_answer = $pdo->prepare("
             INSERT INTO answers (session_id, question_id, question_type, student_answer, correct_answer, is_correct, points_earned, max_points, correction_needed) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (:session_id, :question_id, :question_type, :student_answer, :correct_answer, :is_correct, :points_earned, :max_points, :correction_needed)
         ");
         
         foreach ($mcq_data['questions'] as $question) {
@@ -199,29 +173,16 @@ function save_mcq_answers($session_id, $mcq_data) {
                 continue;
             }
             
-            $question_id = $question['id'];
-            $student_answer = $question['user_answers'] ?? [];
-            $correct_answers = $question['correct_answers'] ?? [];
-            $is_correct = $question['is_correct'] ?? null;
-            $question_type = $question['type'] ?? 'single_choice';
-            $max_points = $question['points'] ?? 1;
-            $points_earned = ($is_correct === true) ? $max_points : 0;
-            $correction_needed = boolval($question['correction_needed'] ?? false);
-            
-            // Convertir en JSON pour le stockage
-            $student_answer_json = json_encode($student_answer);
-            $correct_answer_json = json_encode($correct_answers);
-            
             $stmt_answer->execute([
-                $session_id,
-                $question_id,
-                $question_type,
-                $student_answer_json,
-                $correct_answer_json,
-                $is_correct,
-                $points_earned,
-                $max_points,
-                $correction_needed,
+                'session_id' => $session_id,
+                'question_id' => $question['id'],
+                'question_type' => $question['type'] ?? 'single_choice',
+                'student_answer' => json_encode($question['user_answers'] ?? []),
+                'correct_answer' => json_encode($question['correct_answers'] ?? []),
+                'is_correct' => $question['is_correct'] ?? null,
+                'points_earned' => ($question['is_correct'] ?? false) ? ($question['points'] ?? 1) : 0,
+                'max_points' => $question['points'] ?? 1,
+                'correction_needed' => boolval($question['correction_needed'] ?? false),
             ]);
         }
     } catch (PDOException $e) {
@@ -229,64 +190,49 @@ function save_mcq_answers($session_id, $mcq_data) {
     }
 }
 
-/**
- * Get an answer exists by his id
- */
 function get_answer_by_id($answer_id) {
     try {
         $pdo = get_database_connection();
 
-        // Récupérer les informations de la réponse
-        $stmt = $pdo->prepare("SELECT * FROM answers WHERE id = ?");
-        $stmt->execute([$answer_id]);
+        $stmt = $pdo->prepare("SELECT * FROM answers WHERE id = :answer_id");
+        $stmt->execute(['answer_id' => $answer_id]);
         return $stmt->fetch();
     } catch (PDOException $e) {
         throw new Exception("Error while trying to get answer #$answer_id : " . $e->getMessage());
     }
 }
 
-
-/**
- * Update answer correctness by id
- */
 function update_answer_correctness($answer_id, $is_correct) {
     try {
         $pdo = get_database_connection();
 
-        $sql = "
+        $stmt = $pdo->prepare("
             UPDATE answers
-            SET is_correct = ?, correction_needed = 0
-            WHERE id = ?
-        ";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$is_correct, $answer_id]);
+            SET is_correct = :is_correct, correction_needed = 0
+            WHERE id = :answer_id
+        ");
+        $stmt->execute(['is_correct' => $is_correct, 'answer_id' => $answer_id]);
 
         if ($is_correct) {
-            $sql = "
+            $stmt = $pdo->prepare("
                 UPDATE answers
                 SET points_earned = max_points
-                WHERE id = ?
-            ";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$answer_id]);
+                WHERE id = :answer_id
+            ");
+            $stmt->execute(['answer_id' => $answer_id]);
 
-            $sql = "
+            $stmt = $pdo->prepare("
                 UPDATE sessions
                 SET total_score = total_score + (SELECT points_earned FROM answers WHERE id = :answer_id)
                 , percentage = ((total_score + (SELECT points_earned FROM answers WHERE id = :answer_id)) * 100.0) / max_score
                 WHERE id = (SELECT session_id FROM answers WHERE id = :answer_id)
-            ";
-            $stmt = $pdo->prepare($sql);
+            ");
             $stmt->execute(['answer_id' => $answer_id]);
         }
-
-        
     } catch (PDOException $e) {
         throw new Exception("Error while trying to update answer #$answer_id correctness : " . $e->getMessage());
     }
 }
-
 
 function insert_warning($session_id, $warning_type) {
     try {
@@ -294,14 +240,46 @@ function insert_warning($session_id, $warning_type) {
 
         $stmt = $pdo->prepare("
             INSERT INTO warnings (session_id, warning_type, created_at) 
-            VALUES (?, ?, CURRENT_TIMESTAMP)
+            VALUES (:session_id, :warning_type, CURRENT_TIMESTAMP)
         ");
 
         $stmt->execute([
-            $session_id,
-            $warning_type,
+            'session_id' => $session_id,
+            'warning_type' => $warning_type,
         ]);
     } catch (PDOException $e) {
         throw new Exception("Error while trying to insert warning for session #$session_id : " . $e->getMessage());
     }
+}
+
+function get_warnings() {
+    try {
+        $pdo = get_database_connection();
+
+        $stmt = $pdo->prepare("
+            SELECT warnings.*, sessions.id as session_id, sessions.student_name as student_name
+            FROM warnings 
+            JOIN sessions ON warnings.session_id = sessions.id
+            ORDER BY created_at DESC");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        throw new Exception("Error while trying to get warnings : " . $e->getMessage());
+    }
+}
+
+
+function create_new_mcq_session($mcq_id, $fullname) {
+    $pdo = get_database_connection();
+    $stmt = $pdo->prepare("
+            INSERT INTO sessions (mcq_id, student_name) 
+            VALUES (?, ?)
+        ");
+        
+        $stmt->execute([
+            $mcq_id,
+            $fullname,
+        ]);
+    
+    return $pdo->lastInsertId();
 }
