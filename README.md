@@ -51,6 +51,7 @@ cd libre-mcq
 ```
 
 2. **Configuration du serveur web**
+
 Pour Nginx, utilisez le fichier de configuration fourni et modifiez le nom de domaine :
 ```bash
 cp confs/example.nginx.conf /etc/nginx/sites-available/libre-mcq.conf
