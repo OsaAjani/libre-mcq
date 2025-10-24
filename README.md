@@ -1,109 +1,108 @@
 # Libre MCQ 📝
 
-Libre MCQ est une plateforme open source de questionnaires à choix multiples (MCQ) conçue pour être facile à héberger et à utiliser. Construite avec PHP et SQLite, elle offre une solution légère et robuste pour créer et administrer des questionnaires en ligne.
+Libre MCQ is an open-source multiple-choice questionnaire (MCQ) platform designed to be easy to host and use. Built with PHP and SQLite, it offers a lightweight and robust solution for creating and managing online quizzes.
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-### 📋 Types de questions supportés
-- **Choix unique** - Une seule réponse correcte
-- **Choix multiples** - Plusieurs réponses correctes possibles
-- **Questions ouvertes** - Réponses en texte libre (courtes et longues)
-- **Support d'images** - Intégration d'images dans les questions
+### 📋 Supported Question Types
+- **Single Choice** - One correct answer
+- **Multiple Choice** - Multiple correct answers possible
+- **Open Questions** - Free text responses (short and long)
+- **Image Support** - Integration of images in questions
 
-### 🎯 Gestion des questionnaires
-- Format JSON simple et lisible pour définir les questionnaires
-- Correction automatique pour les questions fermées
-- Randomisation des questions et réponses
-- Système de points personnalisable
-- Affichage conditionnel des résultats
-- Interface d'administration complète
+### 🎯 Questionnaire Management
+- Simple and readable JSON format for defining quizzes
+- Automatic grading for closed questions
+- Randomization of questions and answers
+- Customizable scoring system
+- Conditional display of results
+- Full administration interface
 
-### 🛡️ Protection anti-triche avancée
-Libre MCQ intègre plusieurs mécanismes pour empêcher la triche :
+### 🛡️ Advanced Anti-Cheating Protection
+Libre MCQ includes several mechanisms to prevent cheating:
 
-- **Détection de changement d'onglet/fenêtre** - Surveillance des tentatives de navigation
-- **Blocage du copier-coller** - Empêche la copie de questions vers des IA
-- **Détection des outils de développement** - Alerte en cas d'ouverture de la console
-- **Protection contre l'IA** - Mécanismes spécifiques anti-ChatGPT et autres chatbots
-- **Surveillance de la perte de focus** - Détection quand l'utilisateur quitte la page
-- **Prévention du clic droit** - Altération du menu contextuel
+- **Tab/Window Change Detection** - Monitors navigation attempts
+- **Copy-Paste Blocking** - Prevents copying questions to AI tools
+- **Developer Tools Detection** - Alerts when the console is opened
+- **AI Protection** - Specific mechanisms against ChatGPT and other chatbots
+- **Focus Loss Monitoring** - Detects when the user leaves the page
+- **Right-Click Prevention** - Alters the context menu
 
 ### 👥 Administration
-- Interface d'administration dédiée
-- Gestion des sessions de questionnaires
-- Visualisation des réponses
-- Visualisation des alertes de triches enregistrées
-- Contrôle de l'état des questionnaires (ouvert/fermé)
-- Correction en un clic des questions ouvertes
+- Dedicated administration interface
+- Management of quiz sessions
+- Viewing responses
+- Viewing recorded cheating alerts
+- Control of quiz status (open/closed)
+- One-click grading for open questions
 
 ## 🚀 Installation
 
-### Prérequis
-- PHP 7.4 ou supérieur
+### Prerequisites
+- PHP 7.4 or higher
 - SQLite 3
-- Serveur web (Apache, Nginx)
+- Web server (Apache, Nginx)
 
-### Installation rapide
+### Quick Installation
 
-1. **Cloner le projet**
+1. **Clone the project**
 ```bash
-git clone https://github.com/votre-username/libre-mcq.git
+git clone https://github.com/your-username/libre-mcq.git
 cd libre-mcq
 ```
 
-2. **Configuration du serveur web**
+2. **Configure the web server**
 
-Pour Nginx, utilisez le fichier de configuration fourni et modifiez le nom de domaine :
+For Nginx, use the provided configuration file and modify the domain name:
 ```bash
 cp confs/example.nginx.conf /etc/nginx/sites-available/libre-mcq.conf
 ln -s /etc/nginx/sites-available/libre-mcq.conf /etc/nginx/sites-enabled/
 ```
 
-Pour Apache assurez-vous que les fichiers .htaccess soient supportés et le module de ré-écriture d'URL activé.
+For Apache, ensure `.htaccess` files are supported and the URL rewrite module is enabled.
 
-3. **Initialiser la base de données**
+3. **Initialize the database**
 ```bash
 sqlite3 data/database.sqlite < data/init_db.sql
 ```
 
-4. **Configurer les permissions**
+4. **Set permissions**
 ```bash
 chown -R www-data:$user data/
 chmod 755 data/
 chmod 660 data/database.sqlite
 ```
 
-5. **Modifier les identifiants admin**
+5. **Update admin credentials**
 ```bash
 htpasswd -c admin/.htpasswd admin
 ```
 
+## 📝 Creating a Quiz
 
-## 📝 Création d'un questionnaire
+Quizzes are defined in JSON format in the `data/` folder. Here is the structure:
 
-Les questionnaires sont définis au format JSON dans le dossier `data/`. Voici la structure :
-
-### Structure de base
+### Basic Structure
 ```json
 {
-    "title": "Titre du questionnaire",
-    "description": "Description du questionnaire",
+    "title": "Quiz Title",
+    "description": "Quiz Description",
     "show_results": true,
     "randomize": true,
     "questions": [...]
 }
 ```
 
-### Exemples de questions
+### Question Examples
 
-#### Choix unique
+#### Single Choice
 ```json
 {
     "id": 1,
     "type": "single_choice",
-    "question": "Quelle est la capitale de la France ?",
+    "question": "What is the capital of France?",
     "options": {
-        "a": "Londres",
+        "a": "London",
         "b": "Berlin",
         "c": "Paris",
         "d": "Madrid"
@@ -113,12 +112,12 @@ Les questionnaires sont définis au format JSON dans le dossier `data/`. Voici l
 }
 ```
 
-#### Choix multiples
+#### Multiple Choice
 ```json
 {
     "id": 2,
     "type": "multiple_choice", 
-    "question": "Quels sont des langages de programmation ?",
+    "question": "Which of these are programming languages?",
     "options": {
         "a": "Python",
         "b": "HTML",
@@ -130,26 +129,26 @@ Les questionnaires sont définis au format JSON dans le dossier `data/`. Voici l
 }
 ```
 
-#### Question ouverte
+#### Open Question
 ```json
 {
     "id": 3,
     "type": "open",
-    "question": "Expliquez le concept de programmation orientée objet.",
-    "placeholder": "Tapez votre réponse ici...",
+    "question": "Explain the concept of object-oriented programming.",
+    "placeholder": "Type your answer here...",
     "points": 5,
-    "answer": "Réponse de référence (optionnelle)"
+    "answer": "Reference answer (optional)"
 }
 ```
 
-`answer` is optionnal and will be used to show an example of correct response to the student 
+`answer` is optional and will be used to show an example of a correct response to the student.
 
-#### Avec image
+#### With Image
 ```json
 {
     "id": 4,
     "type": "single_choice",
-    "question": "Que représente cette image ?",
+    "question": "What does this image represent?",
     "images": [
         "https://example.com/image.jpg",
         "/assets/local-image.png"
@@ -163,69 +162,67 @@ Les questionnaires sont définis au format JSON dans le dossier `data/`. Voici l
 }
 ```
 
-## 📁 Structure du projet
+## 📁 Project Structure
 
 ```
 libre-mcq/
-├── admin/                 # Interface d'administration
-├── assets/               # Ressources statiques (CSS, JS, images)
-├── confs/                # Fichiers de configuration
-├── data/                 # Base de données et questionnaires
-│   ├── database.sqlite   # Base de données SQLite
-│   ├── init_db.sql      # Script d'initialisation
-│   └── example/         # Exemple de questionnaire
-├── incs/                 # Fichiers PHP inclus
-├── templates/            # Templates PHP
-├── index.php            # Page d'accueil
-├── mcq.php              # Affichage des questionnaires
-├── answer.php           # Traitement des réponses
-└── README.md            # Ce fichier
+├── admin/                 # Administration interface
+├── assets/               # Static resources (CSS, JS, images)
+├── confs/                # Configuration files
+├── data/                 # Database and quizzes
+│   ├── database.sqlite   # SQLite database
+│   ├── init_db.sql      # Initialization script
+│   └── example/         # Example quiz
+├── incs/                 # Included PHP files
+├── templates/            # PHP templates
+├── index.php            # Homepage
+├── mcq.php              # Quiz display
+├── answer.php           # Response processing
+└── README.md            # This file
 ```
 
 ## 🔧 Configuration
 
-### Gestion des questionnaires
+### Managing Quizzes
 
-1. **Créer un questionnaire** : Créez un dossier dans `data/` avec un fichier `mcq.json`
-2. **Activer/désactiver** : Créez/supprimez le fichier `status.txt` contenant "open" ou "closed"
-3. **Protection IA** : Ajoutez un fichier `ai_protect.txt` pour activer les protections avancées `on` pour activer `off` pour désactiver.
+1. **Create a quiz**: Create a folder in `data/` with a `mcq.json` file.
+2. **Enable/Disable**: Create/delete the `status.txt` file containing "open" or "closed".
+3. **AI Protection**: Add an `ai_protect.txt` file to enable advanced protections. Use `on` to enable, `off` to disable.
 
-### Interface d'administration
+### Administration Interface
 
-Accédez à `/admin/` pour :
-- Voir les sessions actives
-- Consulter les résultats
-- Gérer l'état des questionnaires
-- Voir les alertes de triche
+Access `/admin/` to:
+- View active sessions
+- Review results
+- Manage quiz status
+- View cheating alerts
 
-## 🛡️ Sécurité
+## 🛡️ Security
 
-Libre MCQ implémente plusieurs couches de sécurité :
+Libre MCQ implements multiple layers of security:
 
-- **Protection CSRF** pour toutes les soumissions de formulaires
-- **Validation côté serveur** de toutes les données
-- **Échappement HTML** pour prévenir les attaques XSS
-- **Système de sessions sécurisé**
-- **Monitoring anti-triche en temps réel**
+- **CSRF Protection** for all form submissions
+- **Server-side Validation** of all data
+- **HTML Escaping** to prevent XSS attacks
+- **Secure Session Management**
+- **Real-time Anti-Cheating Monitoring**
 
 ## 🤝 Contribution
 
-Libre MCQ est un logiciel libre sous licence GNU GPL v3. Les contributions sont les bienvenues !
+Libre MCQ is free software under the GNU GPL v3 license. Contributions are welcome!
 
-### Comment contribuer
+### How to Contribute
 
-1. Fork le projet
-2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/nouvelle-fonctionnalite`)
-3. Committez vos changements (`git commit -am 'Ajout d'une nouvelle fonctionnalité'`)
-4. Poussez vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
-5. Ouvrez une Pull Request
+1. Fork the project.
+2. Create a branch for your feature (`git checkout -b feature/new-feature`).
+3. Commit your changes (`git commit -am 'Add a new feature'`).
+4. Push to the branch (`git push origin feature/new-feature`).
+5. Open a Pull Request.
 
+## 📄 License
 
-## 📄 Licence
-
-Ce projet est sous licence GNU General Public License v3.0. Voir le fichier `LICENSE` pour plus de détails.
-
+This project is licensed under the GNU General Public License v3.0. See the `LICENSE` file for details.
 
 ---
 
-**Libre MCQ** - Une plateforme MCQ libre, sécurisée et facile à utiliser. 🚀
+**Libre MCQ** - A free, secure, and easy-to-use MCQ platform. 🚀
