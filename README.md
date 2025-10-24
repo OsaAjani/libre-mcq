@@ -34,6 +34,7 @@ Libre MCQ intègre plusieurs mécanismes pour empêcher la triche :
 - Visualisation des réponses
 - Visualisation des alertes de triches enregistrées
 - Contrôle de l'état des questionnaires (ouvert/fermé)
+- Correction en un clic des questions ouvertes
 
 ## 🚀 Installation
 
