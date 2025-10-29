@@ -79,5 +79,8 @@
     </section>
 </main>
 
+<link rel="stylesheet" href="assets/highlight.min.css"/>
+<script src="assets/highlight.min.js"></script>
+
 
 <?php include 'templates/incs/footer.php'; ?>

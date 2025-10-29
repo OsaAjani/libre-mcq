@@ -9,9 +9,11 @@
         </div>
 
         <h1><?= htmlspecialchars($mcq['title']); ?></h1>
+        <h4>(<?= count($mcq['questions']); ?> Questions)</h4>
         <p><?= htmlspecialchars($mcq['description']); ?></p>
+        
 
-        <form id="mcq-form" method="post" action="answer.php">
+        <form id="mcq-form" method="post" action="answer.php" class="mt-5">
             <input type="hidden" name="mcq_id" value="<?= htmlspecialchars($mcq_id); ?>">
             <input type="hidden" name="csrf" value="<?= htmlspecialchars(csrf_token()); ?>">
             
@@ -33,4 +35,7 @@
         <script src="assets/mcq.js"></script>
         <script src="assets/paste.js"></script>
     <?php endif; ?>
+    <link rel="stylesheet" href="assets/highlight.min.css"/>
+    <script src="assets/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
 <?php include 'templates/incs/footer.php'; ?>

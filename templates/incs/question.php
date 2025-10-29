@@ -1,6 +1,6 @@
 <article class="card mb-3">
     <header>
-        <h4 class="card-title mb-0"><?php echo htmlspecialchars($question['question']); ?>
+        <h4 class="card-title mb-0"><?= $index + 1 ?>. <?php echo secure($question['question']); ?>
             <?php if (isset($question['points'])): ?>
                 <span class="chip"><?php echo htmlspecialchars($question['points']); ?> pts</span>
             <?php endif; ?>
@@ -14,6 +14,10 @@
         </h4>
     </header>
     <main>
+        <?php if ($question['details'] ?? false): ?>
+            <section><?= secure($question['details']); ?></section>
+        <?php endif; ?>
+
         <?php foreach ($question['images'] ?? [] as $image): ?>
             <div class="question-image mt-3">
                 <img src="<?php echo htmlspecialchars($image); ?>" alt="Question Image" class="img-fluid">
@@ -34,7 +38,7 @@
                 <?php foreach ($question['options'] as $option_id => $option): ?>
                     <label>
                         <input type="radio" name="answer[<?php echo $question['id']; ?>]" value="<?php echo htmlspecialchars($option_id); ?>" required>
-                        <?php echo htmlspecialchars("$option_id) $option"); ?>
+                        <?php echo htmlspecialchars("$option_id) ") . secure($option); ?>
                     </label>
                 <?php endforeach; ?>
 
@@ -42,7 +46,7 @@
                 <?php foreach ($question['options'] as $option_id => $option): ?>
                     <label>
                         <input type="checkbox" name="answer[<?php echo $question['id']; ?>][]" value="<?php echo htmlspecialchars($option_id); ?>">
-                        <?php echo htmlspecialchars("$option_id) $option"); ?>
+                        <?php echo htmlspecialchars("$option_id) ") . secure($option); ?>
                     </label>
                 <?php endforeach; ?>
 

@@ -102,7 +102,10 @@
                                 <div>
                                     <h3>Question <?= $question_index++ ?></h3>
                                     <?php if ($question): ?>
-                                        <p><strong><?= htmlspecialchars($question['question']) ?></strong></p>
+                                        <p><strong><?= secure($question['question']) ?></strong></p>
+                                        <?php if ($question['details'] ?? false): ?>
+                                            <div><?= secure($question['details']); ?></div>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         <p><em>Question ID: <?= htmlspecialchars($answer['question_id']) ?></em></p>
                                     <?php endif; ?>
@@ -133,9 +136,9 @@
                                             if (!empty($ans)):
                                         ?>
                                             <li>
-                                                <strong><?= htmlspecialchars($ans) ?>)</strong>
+                                                <strong><?= secure($ans) ?>)</strong>
                                                 <?php if ($question && isset($question['options'][$ans])): ?>
-                                                    <?= htmlspecialchars($question['options'][$ans]) ?>
+                                                    <?= secure($question['options'][$ans]) ?>
                                                 <?php endif; ?>
                                             </li>
                                         <?php 
@@ -154,9 +157,9 @@
                                 <ul style="margin: 0.5rem 0;">
                                     <?php foreach ($correct_answers as $correct): ?>
                                         <li>
-                                            <strong><?= htmlspecialchars($correct) ?>)</strong>
+                                            <strong><?= secure($correct) ?>)</strong>
                                             <?php if ($question && isset($question['options'][$correct])): ?>
-                                                <?= htmlspecialchars($question['options'][$correct]) ?>
+                                                <?= secure($question['options'][$correct]) ?>
                                             <?php endif; ?>
                                         </li>
                                     <?php endforeach; ?>
@@ -217,5 +220,8 @@
             }
         }
     </style>
+
+    <link rel="stylesheet" href="../assets/highlight.min.css"/>
+    <script src="../assets/highlight.min.js"></script>
 
 <?php require_once '../templates/admin/incs/footer.php'; ?>

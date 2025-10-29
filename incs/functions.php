@@ -103,3 +103,16 @@
         $_SESSION['flashes'] = [];
         return $flashes;
     }
+
+    function secure($data)
+    {
+        $s = nl2br(htmlspecialchars($data, ENT_QUOTES, 'UTF-8'));
+
+        # Enable support for inline code using ``<code>...</code>``
+        $s = str_replace(["&lt;code&gt;", "&lt;/code&gt;"], ["<code>", "</code>"], $s);
+
+        # Enable support for block code using ````<pre></pre>````
+        $s = str_replace(["&lt;pre&gt;", "&lt;/pre&gt;"], ["<pre>", "</pre>"], $s);
+
+        return $s;
+    }

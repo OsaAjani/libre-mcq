@@ -6,7 +6,7 @@
         <?php if (count($open_mcqs) === 0): ?>
             <p style="text-align: center;">No available quizzes at the moment. Please check back later.</p>
         <?php else: ?>
-            <div class="grid">
+            <div class="">
             <?php foreach ($open_mcqs as $mcq): ?>
                 <article class="card">
                     <header>
